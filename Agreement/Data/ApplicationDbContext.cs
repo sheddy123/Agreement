@@ -24,9 +24,9 @@ namespace Agreement.Data
                 .HasIndex(u => u.GroupCode)
                 .IsUnique();
 
-            builder.Entity<Agreement>()
-                .HasIndex(u => u.UserId)
-                .IsUnique();
+            //builder.Entity<Agreement>()
+            //    .HasIndex(u => u.UserId)
+            //    .IsUnique();
             builder.Entity<Agreement>()
     .HasOne(e => e.Product)
     .WithMany()
