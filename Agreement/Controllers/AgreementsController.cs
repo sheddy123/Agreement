@@ -13,7 +13,7 @@ using Agreement.Helpers;
 
 namespace Agreement.Controllers
 {
- //   [Authorize]
+   [Authorize]
     public class AgreementsController : Controller
     {
         private readonly ApplicationDbContext _context;
