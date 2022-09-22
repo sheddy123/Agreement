@@ -149,9 +149,10 @@
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["ProductNumber"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Product Number</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["GroupCode"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Group Code</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["GroupCode"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Product Group Code</a>
             </th>
-            <th></th>
+            <th>Product Price</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -176,6 +177,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ProductGroup.GroupCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductPrice)
                 </td>
                 <td>
                     <a type="button" class="btn btn-primary" id="editAgreementBtn" data-bs-toggle="modal" data-bs-target="#editAgreementModal" onclick="EditAgreementBtn(@item.AgreementId)">Edit</a>
