@@ -127,8 +127,8 @@
 <p>
     <button type="button" id="createAgreementBtn" class="btn btn-primary createDetails" data-bs-toggle="modal" data-bs-target="#exampleModal">New Agreement</button>
 </p>
-<table class="table">
-    <thead>
+<table class="table table-striped">
+    <thead class="thead-dark">
         <tr>
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["UserName"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">User Name</a>
