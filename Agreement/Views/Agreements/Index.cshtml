@@ -1,0 +1,312 @@
+﻿@using Agreement.Helpers;
+@model PaginatedList<Agreement.Data.Agreement>
+@{
+    ViewData["Title"] = "Index";
+    var productDescription = new Agreement.Data.Agreement();
+}
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+    .modal-confirm {
+        color: #636363;
+        width: 400px;
+    }
+
+        .modal-confirm .modal-content {
+            padding: 20px;
+            border-radius: 5px;
+            border: none;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .modal-confirm .modal-header {
+            border-bottom: none;
+            position: relative;
+        }
+
+        .modal-confirm h4 {
+            text-align: center;
+            font-size: 26px;
+            margin: 30px 0 -10px;
+        }
+
+        .modal-confirm .close {
+            position: absolute;
+            top: -5px;
+            right: -2px;
+        }
+
+        .modal-confirm .modal-body {
+            color: #999;
+        }
+
+        .modal-confirm .modal-footer {
+            border: none;
+            text-align: center;
+            border-radius: 5px;
+            font-size: 13px;
+            padding: 10px 15px 25px;
+        }
+
+            .modal-confirm .modal-footer a {
+                color: #999;
+            }
+
+        .modal-confirm .icon-box {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+            border-radius: 50%;
+            z-index: 9;
+            text-align: center;
+            border: 3px solid #f15e5e;
+        }
+
+            .modal-confirm .icon-box i {
+                color: #f15e5e;
+                font-size: 46px;
+                display: inline-block;
+                margin-top: 13px;
+            }
+
+        .modal-confirm .btn, .modal-confirm .btn:active {
+            color: #fff;
+            border-radius: 4px;
+            background: #60c7c1;
+            text-decoration: none;
+            transition: all 0.4s;
+            line-height: normal;
+            min-width: 120px;
+            border: none;
+            min-height: 40px;
+            border-radius: 3px;
+            margin: 0 5px;
+        }
+
+        .modal-confirm .btn-secondary {
+            background: #c1c1c1;
+        }
+
+            .modal-confirm .btn-secondary:hover, .modal-confirm .btn-secondary:focus {
+                background: #a8a8a8;
+            }
+
+        .modal-confirm .btn-danger {
+            background: #f15e5e;
+        }
+
+            .modal-confirm .btn-danger:hover, .modal-confirm .btn-danger:focus {
+                background: #ee3535;
+            }
+
+    .trigger-btn {
+        display: inline-block;
+        margin: 100px auto;
+    }
+    .rowSearch{
+       float:right;
+    }
+</style>
+
+<!-- Button trigger modal -->
+
+
+<form asp-action="Index" method="get">
+    <div class="row rowSearch">
+        <div class="form-actions no-color">
+            <div class="form-group">
+                <p>
+                    Search: <input class="form-control" type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+                    <br/>
+                    <input type="submit" value="Search" class="btn btn-success" /> 
+                </p>
+            </div>
+        </div>
+    </div>
+</form>
+<p>
+    <button type="button" id="createAgreementBtn" class="btn btn-primary createDetails" data-bs-toggle="modal" data-bs-target="#exampleModal">New Agreement</button>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["UserName"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">User Name</a>
+            </th>
+            <th>
+                Effective Date
+            </th>
+            <th>
+                Expiration Date
+            </th>
+            <th>
+                New Price
+            </th>
+            <th>
+                Active
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["ProductNumber"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Product Number</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["GroupCode"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Group Code</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@User.Identity.Name</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EffectiveDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExpirationDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NewPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Active)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.ProductNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductGroup.GroupCode)
+                </td>
+                <td>
+                    <a type="button" class="btn btn-primary" id="editAgreementBtn" data-bs-toggle="modal" data-bs-target="#editAgreementModal" onclick="EditAgreementBtn(@item.AgreementId)">Edit</a>
+
+                    <a type="button" class="btn btn-danger" id="deleteAgreementBtn" onclick="DeleteAgreementBtn(@item.AgreementId)" data-bs-toggle="modal" data-bs-target="#deleteAgreementModal">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-success @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-primary @nextDisabled">
+    Next
+</a>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Create Agreement</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <partial name="_AgreementCreate" model="@productDescription" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editAgreementModal" tabindex="-1" aria-labelledby="editAgreementModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Edit Agreement</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body-edit">
+                <div id="modal-body-edit" class="container">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteAgreementModal" tabindex="-1" aria-labelledby="deleteAgreementModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-confirm">
+        <div class="modal-content">
+            <form asp-action="Delete">
+                <div id="modal-delete">
+                </div>
+                <div class="modal-header flex-column">
+                    <div class="icon-box">
+                        <i class="material-icons">&#xE5CD;</i>
+                    </div>
+                    <h4 class="modal-title w-100">Are you sure?</h4>
+                    <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p>Do you really want to delete these records? This process cannot be undone.</p>
+
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                    <button type="button" onclick="DeleteAgreementBtns()" class="btn btn-danger">Yes</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+
+</div>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    function EditAgreementBtn(id) {
+        $.ajax({
+            type: 'Get',
+            url: '@Url.Action("Edit","Agreements")',
+            data: { Id: id }
+        }).done(function (result) {
+            $('#modal-body-edit').html(result);
+        });//$('.modal-body').load("/Agreements/Edit?id="+id+"");
+    }
+    function DeleteAgreementBtn(id) {
+        $.ajax({
+            type: 'Get',
+            url: '@Url.Action("Delete","Agreements")',
+            data: { Id: id }
+        }).done(function (result) {
+            $('#modal-delete').html(result);
+        });
+    }
+
+    function DeleteAgreementBtns() {
+        const id = document.getElementById("AgreementId").value;
+        var antiForgeryToken = $('input[name="__RequestVerificationToken"]').val();
+        $.ajax({
+            type: 'post',
+            headers: { '__RequestVerificationToken': antiForgeryToken },
+            url: '@Url.Action("Delete","Agreements")/' + id,
+            data: { Id: id }
+        }).done(function (result) {
+            location.reload();
+        });
+    }
+
+</script>
+
+
+

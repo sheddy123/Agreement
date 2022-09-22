@@ -1,0 +1,65 @@
+﻿@model Agreement.Data.Agreement
+
+<style>
+    .input-validation-error{
+        border: 1px solid red;
+    }
+    .form-control{
+        outline: none !important;
+        box-shadow: none !important;
+    }
+</style>
+
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label">Group</label>
+                <select asp-for="ProductGroupId" required class="form-control" asp-items="ViewBag.GroupDescription"></select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Product</label>
+                <select asp-for="ProductId" required name="ProductId" class="form-control" asp-items="@(new SelectList(ViewBag.ProductDescription, "ProductId", "ProductDescription"))"></select>
+
+            </div>
+            <div class="form-group">
+                <label asp-for="EffectiveDate" class="control-label"></label>
+                <input asp-format="{0:mm-dd-yyyy}"  type="date" asp-for="EffectiveDate" class="form-control" />
+                <span asp-validation-for="EffectiveDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ExpirationDate" class="control-label"></label>
+                <input type="date" asp-format="{0:mm-dd-yyyy}" asp-for="ExpirationDate" id="ExpirationDate" class="form-control" />
+                <span asp-validation-for="ExpirationDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewPrice" class="control-label"></label>
+                <input asp-for="NewPrice" inputmode="numeric" class="form-control" />
+                <span asp-validation-for="NewPrice" class="text-danger"></span>
+            </div>
+
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    @Html.DisplayNameFor(model => model.Active) <input class="form-check-input" asp-for="Active" />
+                </label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <input type="submit" value="Save Changes" class="btn btn-primary">
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+  
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
+
